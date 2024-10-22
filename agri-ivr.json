@@ -1,0 +1,2285 @@
+{
+    "description": "IVR CALL FLOW",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "next": "set_lang_eng",
+            "event": "incomingMessage"
+          },
+          {
+            "next": "set_lang_eng",
+            "event": "incomingCall"
+          },
+          {
+            "next": "set_lang_eng",
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 190,
+            "y": 50
+          }
+        }
+      },
+      {
+        "name": "Get_options",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "MenuOptions_BasedOn_Keys",
+            "event": "keypress"
+          },
+          {
+            "next": "MenuOptions_BasedOn_text",
+            "event": "speech"
+          },
+          {
+            "next": "Get_options",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -550,
+            "y": 540
+          },
+          "hints": "prices; market",
+          "finish_on_key": "",
+          "say": "What can we do for you?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "speech_model": "phone_call",
+          "profanity_filter": "true",
+          "timeout": 10,
+          "speech_timeout": "auto",
+          "loop": 1,
+          "gather_language": "en-GB"
+        }
+      },
+      {
+        "name": "set_lang_eng",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "Greetings",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "english",
+              "key": "language"
+            }
+          ],
+          "offset": {
+            "x": -370,
+            "y": 50
+          }
+        }
+      },
+      {
+        "name": "Weather_Updates",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -670,
+            "y": 1350
+          },
+          "loop": 1,
+          "say": "Here are the weather informations",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Market_opportunities",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -60,
+            "y": 1030
+          },
+          "loop": 1,
+          "say": "Here are market opportunities",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Farming_techniques",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Techniques",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 640,
+            "y": 850
+          },
+          "loop": 1,
+          "say": "Here  we provide you harvesting techniques, pest and desease management techniques",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Customer_Service",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 1300,
+            "y": 840
+          },
+          "loop": 1,
+          "say": "Stay online we would link you to the customer service",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Market_Prices",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "price_split_digits",
+            "event": "keypress"
+          },
+          {
+            "next": "price_split_text",
+            "event": "speech"
+          },
+          {
+            "next": "Get_options",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "speech_timeout": "auto",
+          "offset": {
+            "x": -2880,
+            "y": 820
+          },
+          "loop": 1,
+          "hints": "Rice; Cassava; Banana; Maize; onions; Tomato; wheat",
+          "finish_on_key": "#",
+          "say": "Which crop price would you like to retrieve?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "gather_language": "en-GB",
+          "profanity_filter": "true",
+          "timeout": 5
+        }
+      },
+      {
+        "name": "price_split_text",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "noMatch"
+          },
+          {
+            "next": "Maize_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Maize",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Maize"
+              }
+            ]
+          },
+          {
+            "next": "Rice_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Rice",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Rice"
+              }
+            ]
+          },
+          {
+            "next": "Wheat_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Wheat",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Wheat"
+              }
+            ]
+          },
+          {
+            "next": "Cassava_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Cassava",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Cassava"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains tomato",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "tomato"
+              }
+            ]
+          },
+          {
+            "next": "Banana_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to onions",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "equal_to",
+                "value": "Banana"
+              }
+            ]
+          },
+          {
+            "next": "Onions_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to onions",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "equal_to",
+                "value": "onions"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Market_Prices.SpeechResult}}",
+          "offset": {
+            "x": -3230,
+            "y": 1150
+          }
+        }
+      },
+      {
+        "name": "price_split_digits",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "noMatch"
+          },
+          {
+            "next": "Maize_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "Rice_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "next": "Wheat_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 3",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "next": "Cassava_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 4",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "4"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 5",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "next": "Banana_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 6",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "6"
+              }
+            ]
+          },
+          {
+            "next": "Onions_Price",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 0",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "0"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.split_key_press_en.Choice}}",
+          "offset": {
+            "x": -3180,
+            "y": 990
+          }
+        }
+      },
+      {
+        "name": "Rice_Price",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Rice_Price_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -2980,
+            "y": 1340
+          },
+          "loop": 2,
+          "say": "The average price of Rice varies between 500 and 600 Franc CFA per kilogram",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Maize_Price",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Maize_Price_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -3300,
+            "y": 1350
+          },
+          "loop": 2,
+          "say": "The average price of maize varies as follows:\n For white maize between 250 and 400 Franc CFA per kilogram\nFor yellow Rice between 300 and 550 Franc CFA per kilogram",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Wheat_Price",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Wheat_Price_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -2660,
+            "y": 1340
+          },
+          "loop": 2,
+          "say": "The average price of Wheat varies between 250 and 600 Franc CFA per kilogram",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Cassava_Price",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Cassava_Price_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -2340,
+            "y": 1340
+          },
+          "loop": 2,
+          "say": "The average price of Cassava varies between 800 and 1100 Franc CFA per kilogram",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Tomato_Price",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Tomato_Price_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -3130,
+            "y": 1550
+          },
+          "loop": 2,
+          "say": "The average price of tomato varies between 250 and 300 Franc CFA per kilogram",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Banana_Price",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Banana_Price_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -2800,
+            "y": 1550
+          },
+          "loop": 2,
+          "say": "The average price of Banana varies between 250 and 600 Franc CFA per kilogram",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Onions_Price",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Onions_Price_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -2450,
+            "y": 1530
+          },
+          "loop": 2,
+          "say": "The average price of Rice varies between 250 and 400 Franc CFA per kilogram",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Greetings",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -1000,
+            "y": 120
+          },
+          "loop": 1,
+          "say": "Hey, I'm Roosevelt Your Agriculture based assitant",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Rice_Price_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "sent"
+          },
+          {
+            "next": "Rice_Price",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -3020,
+            "y": 1750
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "The average price of Rice varies between 500 and 600 Franc CFA per kilogram"
+        }
+      },
+      {
+        "name": "Maize_Price_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "sent"
+          },
+          {
+            "next": "Maize_Price",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -3360,
+            "y": 1760
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "The average price of maize varies as follows:\nFor white maize between 250 and 400 Franc CFA per kilogram\nFor yellow Rice between 300 and 550 Franc CFA per kilogram"
+        }
+      },
+      {
+        "name": "Cassava_Price_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "sent"
+          },
+          {
+            "next": "Cassava_Price",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -2340,
+            "y": 1750
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "The average price of Cassava varies between 800 and 1100 Franc CFA per kilogram"
+        }
+      },
+      {
+        "name": "Banana_Price_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "sent"
+          },
+          {
+            "next": "Banana_Price",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -2830,
+            "y": 1990
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "The average price of Banana varies between 250 and 600 Franc CFA per kilogram"
+        }
+      },
+      {
+        "name": "Crop_Cultivation",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "Cultivation_split_digits",
+            "event": "keypress"
+          },
+          {
+            "next": "Cultivation_split_text",
+            "event": "speech"
+          },
+          {
+            "next": "Get_options",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "speech_timeout": "auto",
+          "offset": {
+            "x": -1200,
+            "y": 1540
+          },
+          "loop": 1,
+          "hints": "Cassava; rice; Tomato; Banana",
+          "finish_on_key": "#",
+          "say": "For Which crop would you like to retrieve cultivation information?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "gather_language": "en-GB",
+          "profanity_filter": "true",
+          "timeout": 10
+        }
+      },
+      {
+        "name": "Cultivation_split_text",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Banana_Cultivation",
+            "event": "noMatch"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Maize",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Maize"
+              }
+            ]
+          },
+          {
+            "next": "rice_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Rice",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Rice"
+              }
+            ]
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Wheat",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Wheat"
+              }
+            ]
+          },
+          {
+            "next": "Cassava_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Cassava",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Cassava"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains tomato",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "tomato"
+              }
+            ]
+          },
+          {
+            "next": "Banana_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to onions",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "equal_to",
+                "value": "Banana"
+              }
+            ]
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to onions",
+                "arguments": [
+                  "{{widgets.Market_Prices.SpeechResult}}"
+                ],
+                "type": "equal_to",
+                "value": "onions"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Market_Prices.SpeechResult}}",
+          "offset": {
+            "x": -1430,
+            "y": 1900
+          }
+        }
+      },
+      {
+        "name": "Cultivation_split_digits",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Banana_Cultivation",
+            "event": "noMatch"
+          },
+          {
+            "next": "Cassava_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "rice_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 3",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "next": "Banana_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 4",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "4"
+              }
+            ]
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 5",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 6",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "6"
+              }
+            ]
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 0",
+                "arguments": [
+                  "{{widgets.split_key_press_en.Choice}}"
+                ],
+                "type": "equal_to",
+                "value": "0"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.split_key_press_en.Choice}}",
+          "offset": {
+            "x": -1430,
+            "y": 1710
+          }
+        }
+      },
+      {
+        "name": "Cassava_Cultivation",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Cassava_Cultivation_Messgae",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -1950,
+            "y": 2160
+          },
+          "loop": 1,
+          "say": "There are several steps in cultivating cassava.\nStep 1: Choose the Right Variety\nSelect the TMS 30572 variety of cassava, which is known for its high yield and good storage quality.\n\nStep 2: Prepare the Land\nClear any vegetation and make the land level and ready for planting.\n\nStep 3: Planting\nUse healthy cassava stems cut from mature plants. Plant them with a spacing of at least 1 meter between each stem.\n\nStep 4: Weed Control and Mulching\nKeep the area around the cassava plants free from weeds by manually removing them. Apply a layer of organic mulch, like straw or wood chips, around the cassava plants to help control weeds.\n\nStep 5: Optimal Planting Time\nThe best time to plant cassava is between March and May\n\nRecommended Nutrients:  Phosphorus and Potassium",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Cassava_Cultivation_Messgae",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Crop_Cultivation",
+            "event": "sent"
+          },
+          {
+            "next": "Cassava_Cultivation",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1930,
+            "y": 2320
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "There are several steps in cultivating cassava.\nStep 1: Choose the Right Variety\nSelect the TMS 30572 variety of cassava, which is known for its high yield and good storage quality.\n\nStep 2: Prepare the Land\nClear any vegetation and make the land level and ready for planting.\nStep 3: Planting\n-Use healthy cassava stems cut from mature plants. \n-Plant them with a spacing of at least 1 meter between each stem.\n\nStep 4: Weed Control and Mulching\n-Keep the area around the cassava plants free from weeds by manually removing them. \n-Apply a layer of organic mulch, like straw or wood chips, around the cassava plants to help control weeds.\n\nStep 5: Optimal Planting Time\nThe best time to plant cassava is between March and May\n\nRecommended Nutrients:  Phosphorus (P),Potassium (K)"
+        }
+      },
+      {
+        "name": "rice_Cultivation",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Rice_cultivation_message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -1620,
+            "y": 2170
+          },
+          "loop": 1,
+          "say": "There are several steps in cultivating rice.\nStep 1: Variety selection\nSelect the NERICA L19 which is known varieties are knownfor their high yield potential and resilience to various environmental stresses.\n\nStep 2: Land and seed preparation preparation \nPrepare the land by clearing it of vegetation and leveling it for planting. and soak rice seeds overnight before planting\n\nStep 3: Planting\nPlant rice seeds at a depth of 2-3 cm in the soil to facilitate germination and early root establishment. And Maintain a spacing of 20-30 cm between rice plants to allow for proper growth and development.\n\nStep 4:  Water Management\nImplement appropriate irrigation methods such as flooding or paddy irrigation.\nMaintain the water depth at 5-10 cm throughout the growing season to support healthy plant growth.\n\nStep 5: Nutrient Management \nApply fertilizers containing Nitrogen (N), Phosphorus (P), Potassium (K), and Zinc (Zn) in split doses to ensure proper nutrition for the rice plants.\n\nStep 6: Weed Control\nControl weeds through flooding, hand weeding, herbicides, or the use of cover crops to prevent competition for resources.\n\nStep 7: Optimal Planting Time\nThe best time to cultivate rice is between May and June",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Rice_cultivation_message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Crop_Cultivation",
+            "event": "sent"
+          },
+          {
+            "next": "rice_Cultivation",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1620,
+            "y": 2320
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "There are several steps in cultivating rice.\nStep 1: Variety selection\nSelect the NERICA L19 which is known varieties are knownfor their high yield potential and resilience to various environmental stresses.\n\nStep 2: Land and seed preparation preparation \n-Prepare the land by clearing it of vegetation and leveling it for planting. and soak rice seeds overnight before planting\n\nStep 3: Planting\n-Plant rice seeds at a depth of 2-3 cm in the soil to facilitate germination and early root establishment. \n-Maintain a spacing of 20-30 cm between rice plants to allow for proper growth and development.\n\nStep 4:  Water Management\n-Implement appropriate irrigation methods such as flooding or paddy irrigation.\n-Maintain the water depth at 5-10 cm throughout the growing season to support healthy plant growth.\n\nStep 5: Nutrient Management and Weed Control\n-Apply fertilizers containing Nitrogen (N), Phosphorus (P), Potassium (K), and Zinc (Zn) in split doses to ensure proper nutrition for the rice plants.\n-Control weeds through flooding, hand weeding, herbicides, or the use of cover crops to prevent competition for resources.\n\nStep 6: Optimal Planting Time\nThe best time to cultivate rice is between May and June"
+        }
+      },
+      {
+        "name": "Wheat_Price_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "sent"
+          },
+          {
+            "next": "Wheat_Price",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -2670,
+            "y": 1760
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "The average price of Cassava varies between 250 and 600 Franc CFA per kilogram"
+        }
+      },
+      {
+        "name": "Tomato_Price_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "sent"
+          },
+          {
+            "next": "Tomato_Price",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -3150,
+            "y": 1980
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "The average price of Cassava varies between 250 and 300 Franc CFA per kilogram"
+        }
+      },
+      {
+        "name": "Onions_Price_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Market_Prices",
+            "event": "sent"
+          },
+          {
+            "next": "Onions_Price",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -2470,
+            "y": 2000
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "The average price of Cassava varies between 250 and 400 Franc CFA per kilogram"
+        }
+      },
+      {
+        "name": "Tomato_Cultivation",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Tomato_cultivation_message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -1310,
+            "y": 2180
+          },
+          "loop": 1,
+          "say": "There are several steps in cultivating Tomato.\nStep 1: Variety selection\nWe recommend considering these top varieties:\nMoney Maker: Known for high yields and great flavor.\nRoma VF: Ideal for its meaty texture, low seed content, and suitability for processing.\nHeinz 1370: Perfect for making tomato paste and sauce.\nFor the best choice tailored to your needs, we suggest consulting with local agricultural experts and considering factors like disease resistance and market demand or contact our customer suport.\n\nStep 2: Land and seed preparation preparation \nClear the land of debris and weeds to provide a clean growing environment for the tomato plants.\nEnsure proper soil drainage and fertility by incorporating organic matter and necessary nutrients.\nTreat the seeds with fungicide to prevent diseases and promote healthy germination.\n\nStep 3: Planting\n Plant tomato seeds at a depth of 0.5-1 cm in the soil to facilitate germination and early root establishment.\nEnsure a spacing of 45-60 cm between tomato plants to allow for proper growth and development.\n\nStep 4:  Water Management\nEstablish a regular irrigation schedule based on the plant's water needs and environmental conditions.\nWater deeply but infrequently to encourage deep root growth\n\nStep 5: Nutrient Management \nApply organic or slow-release fertilizers containing Nitrogen (N), Phosphorus (P), and Potassium (K) according to plant requirements.\nMonitor plant growth and adjust fertilizer application as needed throughout the growing season.\n\nstep 6: Weed control\nImplement mulching to suppress weed growth and reduce competition for nutrients and water.\nHand weed regularly to remove any weeds that may emerge near tomato plants.\n\nStep 7: Optimal Planting Time\nThe best time to cultivate rice is between February and March",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Tomato_cultivation_message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Crop_Cultivation",
+            "event": "sent"
+          },
+          {
+            "next": "Tomato_Cultivation",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1310,
+            "y": 2330
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "There are several steps in cultivating Tomato.\nStep 1: Variety selection\nWe recommend considering these top varieties:\n-Money Maker: Known for high yields and great flavor.\n-Roma VF: Ideal for its meaty texture, low seed content, and suitability for processing.\n-Heinz 1370: Perfect for making tomato paste and sauce.\nFor the best choice tailored to your needs, we suggest consulting with local agricultural experts and considering factors like disease resistance and market demand.\n\nStep 2: Land and seed preparation preparation \n-Clear the land of debris and weeds to provide a clean growing environment for the tomato plants.\n-Ensure proper soil drainage and fertility by incorporating organic matter and necessary nutrients.\n-Treat the seeds with fungicide to prevent diseases and promote healthy germination.\n\nStep 3: Planting\n-Plant tomato seeds at a depth of 0.5-1 cm in the soil to facilitate germination and early root establishment.\n-Ensure a spacing of 45-60 cm between tomato plants to allow for proper growth and development.\n\nStep 4:  Water Management\n-Establish a regular irrigation schedule based on the plant's water needs and environmental conditions.\nWater deeply but infrequently to encourage deep root growth\n\nStep 5: Nutrient Management \n-Apply organic or slow-release fertilizers containing Nitrogen (N), Phosphorus (P), and Potassium (K) according to plant requirements.\n-Monitor plant growth and adjust fertilizer application as needed throughout the growing season.\n\nstep 6: Weed control\n-Implement mulching to suppress weed growth and reduce competition for nutrients and water.\n-Hand weed regularly to remove any weeds that may emerge near tomato plants.\n\nStep 7: Optimal Planting Time\nThe best time to cultivate rice is between February and March"
+        }
+      },
+      {
+        "name": "Techniques",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "Techniques_split_baseOnDigits",
+            "event": "keypress"
+          },
+          {
+            "next": "Techniques_split_baseOnSpeech",
+            "event": "speech"
+          },
+          {
+            "next": "Farming_techniques",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 590,
+            "y": 1100
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "say": "What information do you request?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "gather_language": "en-GB",
+          "profanity_filter": "true",
+          "timeout": 5
+        }
+      },
+      {
+        "name": "Techniques_split_baseOnSpeech",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Farming_techniques",
+            "event": "noMatch"
+          },
+          {
+            "next": "Harvesting_techniques",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Harvesting",
+                "arguments": [
+                  "{{widgets.Techniques.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Harvesting"
+              }
+            ]
+          },
+          {
+            "next": "Pest_Desease_Management",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Pest",
+                "arguments": [
+                  "{{widgets.Techniques.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Pest"
+              }
+            ]
+          },
+          {
+            "next": "Pest_Desease_Management",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains desease",
+                "arguments": [
+                  "{{widgets.Techniques.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "desease"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Techniques.SpeechResult}}",
+          "offset": {
+            "x": 30,
+            "y": 1270
+          }
+        }
+      },
+      {
+        "name": "Techniques_split_baseOnDigits",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Farming_techniques",
+            "event": "noMatch"
+          },
+          {
+            "next": "Harvesting_techniques",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.Techniques.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "Pest_Desease_Management",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.Techniques.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Techniques.Digits}}",
+          "offset": {
+            "x": 960,
+            "y": 1280
+          }
+        }
+      },
+      {
+        "name": "Harvesting_techniques",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "HT_Based_on_Keys",
+            "event": "keypress"
+          },
+          {
+            "next": "HT_Based_on_say",
+            "event": "speech"
+          },
+          {
+            "next": "Harvesting_techniques",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 230,
+            "y": 1700
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "say": "For Which crop would you like to retrieve Harvesting information?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "gather_language": "en-GB",
+          "profanity_filter": "true",
+          "timeout": 5
+        }
+      },
+      {
+        "name": "Pest_Desease_Management",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "PDM_Split_Based_On_Keys",
+            "event": "keypress"
+          },
+          {
+            "next": "PDM_Split_Based_On_say",
+            "event": "speech"
+          },
+          {
+            "next": "Pest_Desease_Management",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 2670,
+            "y": 1590
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "say": "For Which crop would you like to retrieve Desease management information?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "gather_language": "en-GB",
+          "profanity_filter": "true",
+          "timeout": 5
+        }
+      },
+      {
+        "name": "Banana_Cultivation",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Banana_cultivation_message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -960,
+            "y": 2190
+          },
+          "loop": 1,
+          "say": "There are several steps in cultivating Banana.\nStep 1: Variety selection.\nFor top-quality and disease-resistant bananas  the Cavendish variety stands out. It's known for its great taste and durability. If you need more personalized advice, local experts can help based on your farming goals or contact our customer support.\n\nStep 2: Land  preparation.  \nClear the land of any debris, rocks, or weeds.\nPlough or till the soil to improve its structure and aeration.\nEnsure proper drainage to prevent waterlogging.\n\nStep 3: Planting.\nPlant seeds or seedlings at the appropriate depth in the soil.\nEnsure that seeds are not planted too shallow or too deep for optimal germination.\nAllow an average spacing of 240 to 300cm\n\nStep 4:  Water Management.\nProvide regular irrigation to maintain\nsoil moisture throughout the year\nConsider factors like soil type, weather conditions, and growth stage of the plants.\n\nStep 5: Nutrient Management.\nChoose a balanced NPK fertilizer with the appropriate ratio of nitrogen (N), phosphorus (P), and potassium (K) \nBegin fertilizing when the crop is actively growing and in need of nutrients.\nApply the balanced NPK fertilizer evenly over the soil surface around the plants.\nIncorporate the fertilizer into the soil through light cultivation or irrigation to ensure proper nutrient uptake.\n\nstep 6: Weed control.\nImplement mulching to suppress weed growth.\nRegularly inspect your fields and manually remove weeds by hand.\n \nStep 7: Optimal Planting Time.\nBanana can be cultivated at any time of the year.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Banana_cultivation_message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "sent"
+          },
+          {
+            "next": "Banana_Cultivation",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -960,
+            "y": 2340
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "There are several steps in cultivating Banana.\nStep 1: Variety selection\nFor top-quality and disease-resistant bananas  the Cavendish variety stands out. It's known for its great taste and durability. If you need more personalized advice, local experts can help based on your farming goals or contact our customer support.\n\nStep 2: Land  preparation  \n-Clear the land of any debris, rocks, or weeds.\n-Plough or till the soil to improve its -structure and aeration.\n-Ensure proper drainage to prevent waterlogging.\n\nStep 3: Planting\n-Plant seeds or seedlings at the appropriate depth in the soil.\n-Ensure that seeds are not planted too shallow or too deep for optimal germination.\n-Allow an average spacing of 240 to 300cm\n\nStep 4:  Water Management\n-Provide regular irrigation to maintain\nsoil moisture throughout the year\n-Consider factors like soil type, weather conditions, and growth stage of the plants.\n\nStep 5: Nutrient Management \n-Choose a balanced NPK fertilizer with the appropriate ratio of nitrogen (N), phosphorus (P), and potassium (K) \n-Begin fertilizing when the crop is actively growing and in need of nutrients.\n-Apply the balanced NPK fertilizer evenly over the soil surface around the plants.\n-Incorporate the fertilizer into the soil through light cultivation or irrigation to ensure proper nutrient uptake.\n\nstep 6: Weed control\n-Implement mulching to suppress weed growth \n-Regularly inspect your fields and manually remove weeds by hand.\n\nStep 7: Optimal Planting Time\nBanana can be cultivated at any time of the year"
+        }
+      },
+      {
+        "name": "HT_Based_on_Keys",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Harvesting_techniques",
+            "event": "noMatch"
+          },
+          {
+            "next": "Cassava_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "Rice_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 3",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "next": "Banana_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 4",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "4"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Harvesting_techniques.Digits}}",
+          "offset": {
+            "x": -160,
+            "y": 2140
+          }
+        }
+      },
+      {
+        "name": "HT_Based_on_say",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Harvesting_techniques",
+            "event": "noMatch"
+          },
+          {
+            "next": "Cassava_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains cassava",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "cassava"
+              }
+            ]
+          },
+          {
+            "next": "Rice_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Banana",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "rice"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains tomato",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "tomato"
+              }
+            ]
+          },
+          {
+            "next": "Banana_Harvesting",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Banana",
+                "arguments": [
+                  "{{widgets.Harvesting_techniques.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Banana"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Harvesting_techniques.SpeechResult}}",
+          "offset": {
+            "x": 740,
+            "y": 2150
+          }
+        }
+      },
+      {
+        "name": "PDM_Split_Based_On_Keys",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Pest_Desease_Management",
+            "event": "noMatch"
+          },
+          {
+            "next": "Cassava_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 4",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "Rice_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 3",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "next": "Banana_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 4",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "4"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Pest_Desease_Management.Digits}}",
+          "offset": {
+            "x": 2100,
+            "y": 1990
+          }
+        }
+      },
+      {
+        "name": "PDM_Split_Based_On_say",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Pest_Desease_Management",
+            "event": "noMatch"
+          },
+          {
+            "next": "Cassava_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains cassava",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "cassava"
+              }
+            ]
+          },
+          {
+            "next": "Rice_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains rice",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "rice"
+              }
+            ]
+          },
+          {
+            "next": "Tomato_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains tomato",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "tomato"
+              }
+            ]
+          },
+          {
+            "next": "Banana_PDM",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains banana",
+                "arguments": [
+                  "{{widgets.Pest_Desease_Management.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "banana"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Pest_Desease_Management.SpeechResult}}",
+          "offset": {
+            "x": 3670,
+            "y": 1910
+          }
+        }
+      },
+      {
+        "name": "Cassava_Harvesting",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Cassava_Harvesting_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": -400,
+            "y": 2480
+          },
+          "loop": 1,
+          "say": "When harvesting cassava, it's important to wait until the leaves turn yellow and start falling off. Here are the steps to harvest cassava properly:\n\n1. Wait for the Right Time: Harvest when the leaves turn yellow and begin to drop.\n2. Loosen the Soil: Use forks or spades to loosen the soil around the tubers.\n3. Lift Carefully: Lift the cassava tubers carefully from the ground.\n4. Remove Excess Soil: Remove excess soil from the tubers.\n5. Handle Gently: Handle the cassava tubers gently to prevent bruising or damage.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Rice_Harvesting",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Rice_Harvesting_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 50,
+            "y": 2490
+          },
+          "loop": 1,
+          "say": "When it comes to harvesting rice, timing and technique are crucial for a successful harvest. Here are the steps involved in harvesting rice:\n\n1. Timing: Harvest when the grains are fully mature and the straw turns yellow.\n2. Cutting: Use sickles or combine harvesters to cut the rice panicles.\n3. Threshing: After cutting, the next step is threshing, which is the process of separating the grains from the husks. This can be done manually by beating the harvested rice on a hard surface or using mechanical threshers for larger quantities.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Tomato_Harvesting",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Tomato_Harvesting_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 510,
+            "y": 2490
+          },
+          "loop": 1,
+          "say": "When it comes to harvesting tomato, timing and technique are crucial for a successful harvest. Here are the steps involved in harvesting tomato: \n\n1. Timing: Harvest when the fruits are firm, fully colored, and mature.\n2. Tools: Use pruning shears or knives to cut the tomatoes from the vines, leaving a short stem attached to the fruit.\n3. Handling: Handle the tomatoes with care to avoid bruising or damage. Tomatoes are delicate fruits, so gentle handling is key to preserving their quality.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Banana_Harvesting",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Banana_Harvesting_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 950,
+            "y": 2490
+          },
+          "loop": 1,
+          "say": "When it comes to harvesting banana, timing and technique are crucial for a successful harvest. Here are the steps involved in harvesting Banana: \n\n1. Timing: Harvest when the fruits have reached the desired size and color. Bananas should be mature but not overripe.\n2. Tools: Use sharp tools such as machetes or knives to cut the bunches from the plants. Make sure the tools are clean and sharp to make clean cuts.\n3. Handling: Handle the bananas with care to avoid bruising or damage. Bananas have delicate skins that can easily bruise, affecting their quality and shelf life.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "MenuOptions_BasedOn_Keys",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "noMatch"
+          },
+          {
+            "next": "Market_Prices",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.Get_options.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "Crop_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.Get_options.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "next": "Weather_Updates",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 3",
+                "arguments": [
+                  "{{widgets.Get_options.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "next": "Market_opportunities",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 4",
+                "arguments": [
+                  "{{widgets.Get_options.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "4"
+              }
+            ]
+          },
+          {
+            "next": "Farming_techniques",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 6",
+                "arguments": [
+                  "{{widgets.Get_options.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "next": "Customer_Service",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 6",
+                "arguments": [
+                  "{{widgets.Get_options.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "6"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Get_options.Digits}}",
+          "offset": {
+            "x": -920,
+            "y": 800
+          }
+        }
+      },
+      {
+        "name": "MenuOptions_BasedOn_text",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "noMatch"
+          },
+          {
+            "next": "Market_Prices",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains price",
+                "arguments": [
+                  "{{widgets.Get_options.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "price"
+              }
+            ]
+          },
+          {
+            "next": "Crop_Cultivation",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains cultivation",
+                "arguments": [
+                  "{{widgets.Get_options.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "cultivation"
+              }
+            ]
+          },
+          {
+            "next": "Farming_techniques",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Service",
+                "arguments": [
+                  "{{widgets.Get_options.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Techniques"
+              }
+            ]
+          },
+          {
+            "next": "Weather_Updates",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains weather",
+                "arguments": [
+                  "{{widgets.Get_options.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "weather"
+              }
+            ]
+          },
+          {
+            "next": "Market_opportunities",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains opportunities",
+                "arguments": [
+                  "{{widgets.Get_options.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "opportunities"
+              }
+            ]
+          },
+          {
+            "next": "Customer_Service",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Service",
+                "arguments": [
+                  "{{widgets.Get_options.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "Service"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Get_options.SpeechResult}}",
+          "offset": {
+            "x": -2410,
+            "y": 350
+          }
+        }
+      },
+      {
+        "name": "Cassava_Harvesting_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "sent"
+          },
+          {
+            "next": "Cassava_Harvesting",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -390,
+            "y": 2720
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "When harvesting cassava, it's important to wait until the leaves turn yellow and start falling off. Here are the steps to harvest cassava properly:\n\n1.Wait for the Right Time: Harvest when the leaves turn yellow and begin to drop.\n\n2.Loosen the Soil: Use forks or spades to loosen the soil around the tubers.\n\n3.Lift Carefully: Lift the cassava tubers carefully from the ground.\n\n4.Remove Excess Soil: Remove excess soil from the tubers.\n\n5.Handle Gently: Handle the cassava tubers gently to prevent bruising or damage."
+        }
+      },
+      {
+        "name": "Rice_Harvesting_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "sent"
+          },
+          {
+            "next": "Rice_Harvesting",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 70,
+            "y": 2720
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "When it comes to harvesting rice, timing and technique are crucial for a successful harvest. Here are the steps involved in harvesting rice:\n\n1.Timing: Harvest when the grains are fully mature and the straw turns yellow.\n\n2.Cutting: Use sickles or combine harvesters to cut the rice panicles.\n\n3.Threshing: After cutting, the next step is threshing, which is the process of separating the grains from the husks. This can be done manually by beating the harvested rice on a hard surface or using mechanical threshers for larger quantities."
+        }
+      },
+      {
+        "name": "Tomato_Harvesting_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "sent"
+          },
+          {
+            "next": "Tomato_Harvesting",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 530,
+            "y": 2700
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "When it comes to harvesting tomato, timing and technique are crucial for a successful harvest. Here are the steps involved in harvesting tomato: \n\n1.Timing: Harvest when the fruits are firm, fully colored, and mature.\n\n2.Tools: Use pruning shears or knives to cut the tomatoes from the vines, leaving a short stem attached to the fruit.\n\n3.Handling: Handle the tomatoes with care to avoid bruising or damage. Tomatoes are delicate fruits, so gentle handling is key to preserving their quality."
+        }
+      },
+      {
+        "name": "Banana_Harvesting_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "Get_options",
+            "event": "sent"
+          },
+          {
+            "next": "Banana_Harvesting",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 970,
+            "y": 2700
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "When it comes to harvesting banana, timing and technique are crucial for a successful harvest. Here are the steps involved in harvesting Banana: \n\n1.Timing: Harvest when the fruits have reached the desired size and color. Bananas should be mature but not overripe.\n\n2.Tools: Use sharp tools such as machetes or knives to cut the bunches from the plants. Make sure the tools are clean and sharp to make clean cuts.\n\n3.Handling: Handle the bananas with care to avoid bruising or damage. Bananas have delicate skins that can easily bruise, affecting their quality and shelf life."
+        }
+      },
+      {
+        "name": "Cassava_PDM",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Cassava_PDM_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 2210,
+            "y": 2240
+          },
+          "loop": 1,
+          "say": "To effectively manage pests and diseases in cassava cultivation, a combination of methods can be employed. Here are some strategies for both pest and disease management in cassava:\n\nPest Management for Cassava:\n1. Cultural Control Methods:\nImplement practices like crop rotation, intercropping, and maintaining proper plant spacing to reduce pest pressure.\n2. Use Resistant Varieties:\nPlant cassava varieties that are resistant to common pests to minimize damage.\n3. Employ Biological Control Agents:\nIntroduce natural enemies of pests like beneficial insects or microbial agents to control pest populations.\n4. Targeted Use of Chemical Pesticides:\nAs a last resort, apply chemical pesticides selectively and according to recommended guidelines to minimize environmental impact.\n\nDisease Management for Cassava:\n1. Field Sanitation:\nKeep the field clean by removing crop residues and weeds that can harbor disease-causing organisms.\n2.Use Disease-Free Planting Materials:\nStart with healthy planting materials to prevent the introduction of diseases into the field.\n3. Apply Approved Fungicides:\nUse fungicides when necessary to control fungal diseases, following recommended application rates and schedules.\n4. Remove Infected Plants:\nPromptly remove and destroy plants showing signs of disease to prevent the spread of pathogens.\n\nBy integrating these strategies into your cassava farming practices, you can effectively manage pests and diseases, ensuring healthier crops and higher yields.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Rice_PDM",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Rice_PDM_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 2700,
+            "y": 2240
+          },
+          "loop": 1,
+          "say": "For managing pests and diseases in rice cultivation, a comprehensive approach is essential. Here are tailored strategies for both pest and disease management in rice farming:\n\nPest Management for Rice:\n1. Integrated Pest Management (IPM) Approach:\nEmploy a holistic strategy that combines cultural, biological, and chemical control methods to manage pests effectively.\n2. Biological Control Methods:\nIntroduce natural enemies of pests like predatory insects or microbial agents to control pest populations.\n3. Selective Insecticides and Fungicides:\nUse insecticides and fungicides judiciously, opting for selective products that target specific pests or diseases while minimizing harm to beneficial organisms.\n\nDisease Management for Rice:\n1. Field Hygiene:\nMaintain good field sanitation by removing crop residues and weeds that can harbor disease-causing pathogens.\n2. Crop Rotation:\nRotate rice with non-related crops to break disease cycles and reduce the buildup of pathogens.\n3. Disease-Resistant Varieties:\nOpt for rice varieties that are resistant to prevalent diseases in your region to minimize the risk of infections.\n4. Appropriate Fungicides:\nApply fungicides when necessary, following recommended guidelines and using appropriate products to control fungal diseases effectively.\n\nBy integrating these pest and disease management strategies into your rice farming practices, you can enhance crop health, productivity, and sustainability while minimizing the reliance on chemical inputs.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Tomato_PDM",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Tomato_PDM_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 3200,
+            "y": 2240
+          },
+          "loop": 1,
+          "say": "To effectively manage pests and diseases in tomato cultivation, a well-rounded approach is crucial. Here are tailored strategies for both pest and disease management in tomato farming:\n\nPest Management for Tomatoes:\n1. Integrated Pest Management (IPM) Techniques:\nImplement a comprehensive approach that includes cultural, biological, and chemical control methods to manage pests sustainably.\n2. Biological Controls:\nIntroduce natural predators or pathogens that target specific pests to reduce pest populations.\n3. Judicious Use of Insecticides and \nFungicides:\nApply insecticides and fungicides selectively and according to monitoring results to minimize environmental impact and preserve beneficial organisms.\n\nDisease Management for Tomatoes:\n1. Disease-Resistant Varieties:\nPlant tomato varieties that are resistant to common diseases prevalent in your region to reduce the risk of infections.\n2. Crop Rotation:\nRotate tomato crops with unrelated plants to disrupt disease cycles and reduce pathogen buildup in the soil.\n3. Good Field Sanitation:\nMaintain clean fields by removing diseased plant debris and weeds that can harbor pathogens and pests.\n4. Appropriate Fungicides:\nApply fungicides as needed and in accordance with recommended practices to effectively control fungal diseases.\n\nBy integrating these pest and disease management strategies into your tomato cultivation practices, you can promote healthier plants, improve yields, and reduce the reliance on chemical inputs.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Banana_PDM",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Banana_PDM_Message",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Brian",
+          "offset": {
+            "x": 3670,
+            "y": 2250
+          },
+          "loop": 1,
+          "say": "For effective pest and disease management in banana cultivation, a combination of strategies is essential. Here are tailored approaches for both pest and disease management in banana farming:\n\nPest Management for Bananas:\n1. Implement Cultural Practices:\nUtilize practices such as proper spacing, mulching, and adequate nutrition to promote plant health and reduce pest pressure.\n2. Use Pheromone Traps:\nDeploy pheromone traps to monitor and control specific pests by disrupting their mating patterns.\n3. Biological Control Agents:\nIntroduce natural enemies of pests like beneficial insects or microbial agents to manage pest populations.\n4. Selective Use of Insecticides and Fungicides:\nApply insecticides and fungicides judiciously, targeting specific pests or diseases while minimizing impacts on non-target organisms.\n\nDisease Management for Bananas:\n1. Practice Field Sanitation:\nMaintain clean fields by removing debris and weeds that can harbor disease-causing pathogens.\n2. Use Disease-Free Planting Materials:\nStart with healthy planting materials to prevent the introduction of diseases into the plantation.\n3. Apply Approved Fungicides:\nUse fungicides recommended for banana diseases, following proper application techniques and schedules.\n4. Remove Infected Plants:\nPromptly remove and destroy plants showing signs of disease to prevent the spread of pathogens to healthy plants.\n\nBy incorporating these pest and disease management strategies into your banana farming practices, you can help safeguard your crop, promote plant health, and optimize yields.",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "Cassava_PDM_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2210,
+            "y": 2470
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "To effectively manage pests and diseases in cassava cultivation, a combination of methods can be employed. Here are some strategies for both pest and disease management in cassava:\n\nPest Management for Cassava:\n\n1. Cultural Control Methods:\nImplement practices like crop rotation, intercropping, and maintaining proper plant spacing to reduce pest pressure.\n\n2. Use Resistant Varieties:\nPlant cassava varieties that are resistant to common pests to minimize damage.\n\n3. Employ Biological Control Agents:\nIntroduce natural enemies of pests like beneficial insects or microbial agents to control pest populations.\n\n4. Targeted Use of Chemical Pesticides:\nAs a last resort, apply chemical pesticides selectively and according to recommended guidelines to minimize environmental impact.\n\nDisease Management for Cassava:\n\n1. Field Sanitation:\nKeep the field clean by removing crop residues and weeds that can harbor disease-causing organisms.\n\n2.Use Disease-Free Planting Materials:\nStart with healthy planting materials to prevent the introduction of diseases into the field.\n\n3. Apply Approved Fungicides:\nUse fungicides when necessary to control fungal diseases, following recommended application rates and schedules.\n4. Remove Infected Plants:\nPromptly remove and destroy plants showing signs of disease to prevent the spread of pathogens.\n\nBy integrating these strategies into your cassava farming practices, you can effectively manage pests and diseases, ensuring healthier crops and higher yields."
+        }
+      },
+      {
+        "name": "Rice_PDM_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2710,
+            "y": 2460
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "For managing pests and diseases in rice cultivation, a comprehensive approach is essential. Here are tailored strategies for both pest and disease management in rice farming:\n\nPest Management for Rice:\n\n1. Integrated Pest Management (IPM) Approach:\nEmploy a holistic strategy that combines cultural, biological, and chemical control methods to manage pests effectively.\n\n2. Biological Control Methods:\nIntroduce natural enemies of pests like predatory insects or microbial agents to control pest populations.\n\n3. Selective Insecticides and Fungicides:\nUse insecticides and fungicides judiciously, opting for selective products that target specific pests or diseases while minimizing harm to beneficial organisms.\n\nDisease Management for Rice:\n\n1. Field Hygiene:\nMaintain good field sanitation by removing crop residues and weeds that can harbor disease-causing pathogens.\n\n2. Crop Rotation:\nRotate rice with non-related crops to break disease cycles and reduce the buildup of pathogens.\n\n3. Disease-Resistant Varieties:\nOpt for rice varieties that are resistant to prevalent diseases in your region to minimize the risk of infections.\n\n4. Appropriate Fungicides:\nApply fungicides when necessary, following recommended guidelines and using appropriate products to control fungal diseases effectively.\n\nBy integrating these pest and disease management strategies into your rice farming practices, you can enhance crop health, productivity, and sustainability while minimizing the reliance on chemical inputs."
+        }
+      },
+      {
+        "name": "Tomato_PDM_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 3190,
+            "y": 2480
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "To effectively manage pests and diseases in tomato cultivation, a well-rounded approach is crucial. Here are tailored strategies for both pest and disease management in tomato farming:\n\nPest Management for Tomatoes:\n\n1. Integrated Pest Management (IPM) Techniques:\nImplement a comprehensive approach that includes cultural, biological, and chemical control methods to manage pests sustainably.\n\n2. Biological Controls:\nIntroduce natural predators or pathogens that target specific pests to reduce pest populations.\n\n3.Judicious Use of Insecticides and \nFungicides:\nApply insecticides and fungicides selectively and according to monitoring results to minimize environmental impact and preserve beneficial organisms.\n\nDisease Management for Tomatoes:\n\n1. Disease-Resistant Varieties:\nPlant tomato varieties that are resistant to common diseases prevalent in your region to reduce the risk of infections.\n\n2. Crop Rotation:\nRotate tomato crops with unrelated plants to disrupt disease cycles and reduce pathogen buildup in the soil.\n\n3. Good Field Sanitation:\nMaintain clean fields by removing diseased plant debris and weeds that can harbor pathogens and pests.\n\n4. Appropriate Fungicides:\nApply fungicides as needed and in accordance with recommended practices to effectively control fungal diseases.\n\nBy integrating these pest and disease management strategies into your tomato cultivation practices, you can promote healthier plants, improve yields, and reduce the reliance on chemical inputs."
+        }
+      },
+      {
+        "name": "Banana_PDM_Message",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 3690,
+            "y": 2510
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "For effective pest and disease management in banana cultivation, a combination of strategies is essential. Here are tailored approaches for both pest and disease management in banana farming:\n\nPest Management for Bananas:\n\n1. Implement Cultural Practices:\nUtilize practices such as proper spacing, mulching, and adequate nutrition to promote plant health and reduce pest pressure.\n\n2. Use Pheromone Traps:\nDeploy pheromone traps to monitor and control specific pests by disrupting their mating patterns.\n\n3. Biological Control Agents:\nIntroduce natural enemies of pests like beneficial insects or microbial agents to manage pest populations.\n\n4. Selective Use of Insecticides and Fungicides:\nApply insecticides and fungicides judiciously, targeting specific pests or diseases while minimizing impacts on non-target organisms.\n\nDisease Management for Bananas:\n\n1. Practice Field Sanitation:\nMaintain clean fields by removing debris and weeds that can harbor disease-causing pathogens.\n\n2. Use Disease-Free Planting Materials:\nStart with healthy planting materials to prevent the introduction of diseases into the plantation.\n\n3. Apply Approved Fungicides:\nUse fungicides recommended for banana diseases, following proper application techniques and schedules.\n\n4. Remove Infected Plants:\nPromptly remove and destroy plants showing signs of disease to prevent the spread of pathogens to healthy plants.\n\nBy incorporating these pest and disease management strategies into your banana farming practices, you can help safeguard your crop, promote plant health, and optimize yields."
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
